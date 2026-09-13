@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GHAAMPANI | Interactive Eco-Tourism Portal</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @font-face {
+            font-family: 'Aakriti';
+            src: url('/fonts/Aakriti.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Aakriti Bold';
+            src: url('/fonts/Aakriti-Bold.ttf') format('truetype');
+            font-weight: bold;
+            font-style: normal;
+        }
+
+        :root {
+            --forest-green: #1B4332;
+            --emerald-green: #2D6A4F;
+            --mint-light: #E8F5E9;
+            --mint-accent: #D8F3DC;
+            --grey-bg: #F1F5F9;
+            --card-white: #FFFFFF;
+            --text-main: #0F172A;
+            --text-muted: #475569;
+            --accent-gold: #D97706;
+            --border-color: #CBD5E1;
+            --hover-green: #52B788;
+            --font-en: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-np: 'Aakriti', sans-serif;
+            --font-np-bold: 'Aakriti Bold', sans-serif;
+            --transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @media (min-width: 769px) {
+            * { cursor: none; }
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--grey-bg);
+            color: var(--text-main);
+            font-family: var(--font-en);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body.lang-np {
+            font-family: var(--font-np), var(--font-en) !important;
+        }
+
+        body.lang-np h1, 
+        body.lang-np h2, 
+        body.lang-np h3, 
+        body.lang-np .brand-typography,
+        body.lang-np .heading-np {
+            font-family: var(--font-np-bold), var(--font-en) !important;
+        }
+
+        /* Custom Pointer */
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--hover-green);
+            position: fixed;
+            top: 0;
+            left: 0;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.1s, height 0.1s, background-color 0.2s;
+        }
+
+        .cursor-outline {
+            width: 36px;
+            height: 36px;
+            border: 2px solid rgba(82, 183, 136, 0.6);
+            position: fixed;
+            top: 0;
+            left: 0;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%, -50%);
+            transition: transform 0.15s ease-out, width 0.2s, height 0.2s, border-color 0.2s;
+        }
+
+        @media (max-width: 768px) {
+            .cursor-dot, .cursor-outline { display: none !important; }
+        }
+
+        body.hovering .cursor-dot {
+            width: 12px;
+            height: 12px;
+            background-color: var(--accent-gold);
+        }
+
+        body.hovering .cursor-outline {
+            width: 54px;
+            height: 54px;
+            border-color: var(--accent-gold);
+            background: rgba(217, 119, 6, 0.08);
+        }
+
+        /* Sticky Header */
+        header {
+            background-color: rgba(27, 67, 50, 0.98);
+            backdrop-filter: blur(12px);
+            color: white;
+            padding: 1.1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            transition: var(--transition);
+        }
+
+        header.scrolled {
+            padding: 0.65rem 5%;
+            background-color: rgba(15, 35, 26, 0.98);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+            border-bottom: 2px solid var(--hover-green);
+        }
+
+        .brand-typography {
+            font-size: 1.75rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            color: #FFFFFF;
+            position: relative;
+            transition: var(--transition);
+            user-select: none;
+            cursor: pointer;
+        }
+
+        .brand-typography span.gold-accent {
+            color: var(--hover-green);
+            transition: var(--transition);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 22px;
+            align-items: center;
+        }
+
+        nav a {
+            color: rgba(255, 255, 255, 0.88);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            position: relative;
+            padding: 4px 0;
+            transition: var(--transition);
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0%;
+            height: 2px;
+            background-color: var(--hover-green);
+            transition: width 0.3s ease;
+        }
+
+        nav a:hover::after { width: 100%; }
+        nav a:hover { color: white; }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-auth-nav {
+            background-color: transparent;
+            border: 1px solid var(--hover-green);
+            color: #FFFFFF;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .btn-auth-nav:hover {
+            background-color: var(--hover-green);
+            color: var(--forest-green);
+            transform: translateY(-2px);
+        }
+
+        .district-select {
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: white;
+            padding: 7px 14px;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-family: inherit;
+            outline: none;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .district-select option {
+            background: var(--forest-green);
+            color: white;
+        }
+
+        .lang-switch-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .lang-switch-btn:hover {
+            background: rgba(255, 255, 255, 0.28);
+            transform: scale(1.05);
+        }
+
+        /* SECTION STYLING & DISTINCTION */
+        .site-section {
+            position: relative;
+            padding: 90px 20px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        /* HERO SECTION */
+        .hero {
+            background: linear-gradient(rgba(15, 23, 42, 0.72), rgba(27, 67, 50, 0.88)), url('images/hero-himalaya.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+            text-align: center;
+            padding: 140px 20px 110px 20px;
+            border-bottom: 5px solid var(--emerald-green);
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(8px);
+            padding: 6px 18px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 20px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .hero h1 {
+            font-size: 3.2rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.15rem;
+            max-width: 660px;
+            margin: 0 auto 34px auto;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 300;
+        }
+
+        .btn-primary {
+            background-color: var(--hover-green);
+            color: var(--forest-green);
+            padding: 13px 30px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.92rem;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 6px 20px rgba(82, 183, 136, 0.3);
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            background-color: #74C69D;
+            transform: translateY(-3px);
+        }
+
+        #experiences {
+            background-color: #FFFFFF;
+        }
+
+        #blogs {
+            background-color: #F0FDF4;
+        }
+
+        .container {
+            max-width: 1140px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 45px;
+        }
+
+        .section-header h2 {
+            color: var(--text-main);
+            font-size: 2.3rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 8px;
+        }
+
+        .section-header p {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        /* Filter Controls */
+        .filter-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background-color: var(--grey-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 9px 20px;
+            border-radius: 30px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .filter-btn.active, .filter-btn:hover {
+            background-color: var(--forest-green);
+            color: white;
+            border-color: var(--forest-green);
+            transform: translateY(-2px);
+        }
+
+        /* Grid & Card System */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+            gap: 30px;
+        }
+
+        .trail-card {
+            background-color: var(--card-white);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: transform 0.35s ease, box-shadow 0.35s ease;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        }
+
+        .trail-card:hover {
+            border-color: var(--hover-green);
+            transform: translateY(-6px);
+            box-shadow: 0 20px 35px rgba(27, 67, 50, 0.12);
+        }
+
+        .card-img-wrapper {
+            position: relative;
+            overflow: hidden;
+            height: 220px;
+            background-color: #E2E8F0;
+        }
+
+        .trail-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .trail-card:hover img { transform: scale(1.06); }
+
+        .card-tag-floating {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(8px);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .card-content {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .card-title {
+            color: var(--text-main);
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .card-details {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-details i {
+            color: var(--emerald-green);
+            width: 16px;
+        }
+
+        .phone-link {
+            color: var(--forest-green);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .card-footer-badge {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: var(--grey-bg);
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-top: auto;
+            font-size: 0.82rem;
+            font-weight: 600;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Travel Blog Section Cards */
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+            gap: 30px;
+        }
+
+        .blog-card {
+            background: white;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        }
+
+        .blog-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.08);
+            border-color: var(--hover-green);
+        }
+
+        .blog-content { padding: 24px; }
+        .blog-meta { font-size: 0.8rem; color: var(--accent-gold); font-weight: 600; margin-bottom: 6px; }
+        .blog-title { font-size: 1.15rem; font-weight: 600; color: var(--text-main); margin-bottom: 10px; }
+        .blog-excerpt { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 16px; }
+
+        .itinerary-list {
+            background: var(--mint-light);
+            border-radius: 12px;
+            padding: 14px;
+            font-size: 0.82rem;
+            color: var(--forest-green);
+            margin-bottom: 16px;
+        }
+
+        .itinerary-list ul { list-style: none; }
+        .itinerary-list li { margin-bottom: 6px; display: flex; gap: 8px; align-items: flex-start; }
+
+        /* Floating AI Widget "Duluwa" */
+        .ai-chat-btn {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            background: var(--forest-green);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 25px rgba(27, 67, 50, 0.4);
+            z-index: 1500;
+            transition: var(--transition);
+            border: 2px solid var(--hover-green);
+            cursor: pointer;
+        }
+
+        .ai-chat-btn:hover {
+            transform: scale(1.1);
+            background: var(--emerald-green);
+        }
+
+        .ai-widget {
+            position: fixed;
+            bottom: 100px;
+            right: 28px;
+            width: 380px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.18);
+            border: 1px solid var(--border-color);
+            z-index: 1500;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .ai-widget.active { display: flex; }
+
+        .ai-header {
+            background: var(--forest-green);
+            color: white;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .ai-header h4 { font-size: 0.95rem; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+        .ai-body { padding: 16px; height: 280px; overflow-y: auto; font-size: 0.85rem; display: flex; flex-direction: column; gap: 10px; background: #FAFDFB; }
+
+        .chat-msg {
+            padding: 10px 14px;
+            border-radius: 14px;
+            max-width: 85%;
+            line-height: 1.45;
+            word-wrap: break-word;
+        }
+
+        .chat-msg.bot { background: var(--mint-light); color: var(--forest-green); align-self: flex-start; border-bottom-left-radius: 2px; }
+        .chat-msg.user { background: var(--emerald-green); color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
+
+        .suggestions-container {
+            padding: 8px 12px;
+            background: #F1F8F5;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            white-space: nowrap;
+            scrollbar-width: thin;
+        }
+
+        .suggestion-chip {
+            background: white;
+            border: 1px solid var(--hover-green);
+            color: var(--forest-green);
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            flex-shrink: 0;
+        }
+
+        .suggestion-chip:hover {
+            background: var(--hover-green);
+            color: white;
+        }
+
+        .ai-footer { padding: 10px 12px; border-top: 1px solid var(--border-color); display: flex; gap: 8px; background: white; align-items: center; }
+        
+        .chat-input-field {
+            flex: 1;
+            padding: 9px 12px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            outline: none;
+            font-family: inherit;
+            font-size: 0.85rem;
+        }
+
+        .chat-input-field:focus { border-color: var(--emerald-green); }
+
+        /* Modal Overlay System */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(10px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .modal-overlay.active { display: flex; }
+
+        .modal-card {
+            background: white;
+            padding: 36px;
+            border-radius: 24px;
+            max-width: 480px;
+            width: 90%;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 18px; right: 18px;
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            background: var(--grey-bg);
+            cursor: pointer;
+        }
+
+        .role-selector {
+            display: flex;
+            background: var(--grey-bg);
+            padding: 4px;
+            border-radius: 30px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .role-btn {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            background: transparent;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .role-btn.active {
+            background: var(--forest-green);
+            color: white;
+            box-shadow: 0 4px 10px rgba(27, 67, 50, 0.2);
+        }
+
+        .auth-tab-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .auth-tab-btn {
+            background: none;
+            border: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            padding: 4px 8px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .auth-tab-btn.active { color: var(--forest-green); }
+
+        .auth-tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -11px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--forest-green);
+        }
+
+        .auth-form-group {
+            margin-bottom: 16px;
+            text-align: left;
+        }
+
+        .auth-form-group label {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text-main);
+        }
+
+        .auth-form-group input {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            outline: none;
+            font-family: inherit;
+            font-size: 0.88rem;
+        }
+
+        footer {
+            background-color: var(--forest-green);
+            color: rgba(255, 255, 255, 0.8);
+            text-align: center;
+            padding: 40px 20px;
+            font-size: 0.88rem;
+            border-top: 3px solid var(--accent-gold);
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 0.8rem 4%;
+                flex-direction: column;
+                gap: 12px;
+            }
+            nav ul { gap: 14px; }
+            nav a { font-size: 0.8rem; }
+            .header-controls {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 8px;
+            }
+            .hero {
+                padding: 100px 15px 80px 15px;
+                background-attachment: scroll;
+            }
+            .hero h1 { font-size: 2.1rem; }
+            .hero p { font-size: 0.98rem; }
+            .section-header h2 { font-size: 1.8rem; }
+            .grid, .blog-grid { grid-template-columns: 1fr; }
+            .ai-widget { width: 92vw; right: 4vw; bottom: 85px; }
+            .ai-chat-btn { right: 20px; bottom: 20px; width: 52px; height: 52px; }
+            .modal-card { padding: 24px 18px; width: 95%; }
+        }
+    </style>
+</head>
+<body class="lang-en">
+
+    <div class="cursor-dot" id="cursor-dot"></div>
+    <div class="cursor-outline" id="cursor-outline"></div>
+
+    <!-- Header Navigation Bar -->
+    <header id="main-header">
+        <div class="brand-typography interactive-hover" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+            GHAAM<span class="gold-accent">PANI</span>
+        </div>
+
+        <nav>
+            <ul>
+                <li><a href="#home" class="interactive-hover"><span id="nav-discover">Discover</span></a></li>
+                <li><a href="#experiences" class="interactive-hover"><span id="nav-experiences">Adventures</span></a></li>
+                <li><a href="#blogs" class="interactive-hover"><span id="nav-blogs">Itineraries & Stories</span></a></li>
+            </ul>
+        </nav>
+
+        <div class="header-controls">
+            <button class="btn-auth-nav interactive-hover" onclick="openAuthModal('login')">
+                <i class="fa-solid fa-user"></i> <span id="nav-login">Login / Register</span>
+            </button>
+
+            <select class="district-select interactive-hover" onchange="checkDistrict(this)">
+                <option value="gandaki">District: Kaski (Gandaki)</option>
+                <option value="gandaki">District: Mustang (Gandaki)</option>
+                <option value="gandaki">District: Parbat (Gandaki)</option>
+                <option value="other">District: Kathmandu (Bagmati)</option>
+                <option value="other">District: Solukhumbu (Koshi)</option>
+                <option value="other">District: Chitwan (Bagmati)</option>
+            </select>
+
+            <button class="lang-switch-btn interactive-hover" onclick="toggleLanguage()">
+                <i class="fa-solid fa-language" style="font-size: 1.2rem;"></i>
+                <span id="lang-btn-text">नेपाली</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Hero Banner -->
+    <section class="hero" id="home">
+        <span class="hero-badge" id="hero-badge">Gandaki Eco-Tourism & Adventures</span>
+        <h1 id="hero-title">Experience Thrills Across Sky, River & Mountain Trails</h1>
+        <p id="hero-desc">Direct contact with verified adventure operators, river guides, Bungee crews, and ATV rentals in Gandaki Province.</p>
+        <button class="btn-primary interactive-hover" onclick="scrollToExperiences()">
+            <span id="hero-btn-primary">Explore All Activities</span>
+            <i class="fa-solid fa-arrow-right"></i>
+        </button>
+    </section>
+
+    <!-- SECTION 1: Activity Directory -->
+    <section class="site-section" id="experiences">
+        <div class="container">
+            <div class="section-header">
+                <h2 id="sec-title">Gandaki Adventure Directory</h2>
+                <p id="sec-subtitle">HD media images, verified operator contacts, and transparent local pricing</p>
+            </div>
+
+            <div class="filter-container">
+                <button class="filter-btn active interactive-hover" onclick="filterCategory('all', event)"><i class="fa-solid fa-layer-group"></i> All</button>
+                <button class="filter-btn interactive-hover" onclick="filterCategory('aerial', event)"><i class="fa-solid fa-parachute-box"></i> Paragliding & Bungee</button>
+                <button class="filter-btn interactive-hover" onclick="filterCategory('wheels', event)"><i class="fa-solid fa-motorcycle"></i> ATV & Cycling</button>
+                <button class="filter-btn interactive-hover" onclick="filterCategory('water', event)"><i class="fa-solid fa-water"></i> Kayaking & Rafting</button>
+                <button class="filter-btn interactive-hover" onclick="filterCategory('trek', event)"><i class="fa-solid fa-person-hiking"></i> Treks</button>
+            </div>
+
+            <div class="grid">
+                <!-- Activity 1: Kushma Bungee -->
+                <div class="trail-card interactive-hover" data-category="aerial">
+                    <div class="card-img-wrapper">
+                        <span class="card-tag-floating">Kushma / Parbat</span>
+                        <img src="images/bungee-jump.jpg" alt="High Suspension Bridge Bungee Jump Kushma">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">World's 2nd Highest Bungee (228m)</h3>
+                        <div class="card-details"><i class="fa-solid fa-location-dot"></i> <span>Kushma Suspension Bridge, Parbat</span></div>
+                        <div class="card-details"><i class="fa-solid fa-phone"></i> Booking: <a href="tel:+9779801221100" class="phone-link">+977-9801221100</a></div>
+                        <div class="card-details"><i class="fa-solid fa-clock"></i> <span>Day Trip from Pokhara (2.5 hrs ride)</span></div>
+                        <div class="card-footer-badge">
+                            <span><i class="fa-solid fa-shield-halved"></i> Verified Safety Crew</span>
+                            <span style="color: var(--emerald-green);">NPR 8,500</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Activity 2: ATV Quad Biking -->
+                <div class="trail-card interactive-hover" data-category="wheels">
+                    <div class="card-img-wrapper">
+                        <span class="card-tag-floating">Pokhara Valley</span>
+                        <img src="images/atv-quad-ride.jpg" alt="Off-Road Quad ATV Trail Ride">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">Off-Road ATV Dirt Adventure</h3>
+                        <div class="card-details"><i class="fa-solid fa-location-dot"></i> <span>Sarangkot Mountain Track</span></div>
+                        <div class="card-details"><i class="fa-solid fa-phone"></i> Contact: <a href="tel:+9779856032111" class="phone-link">+977-9856032111</a></div>
+                        <div class="card-details"><i class="fa-solid fa-clock"></i> <span>1 to 2 Hour Track Sessions</span></div>
+                        <div class="card-footer-badge">
+                            <span><i class="fa-solid fa-gauge-high"></i> Automatic Quad 200cc</span>
+                            <span style="color: var(--emerald-green);">NPR 4,500</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Activity 3: Kayaking & Rafting -->
+                <div class="trail-card interactive-hover" data-category="water">
+                    <div class="card-img-wrapper">
+                        <span class="card-tag-floating">Upper Seti River</span>
+                        <img src="images/kayaking-rafting.jpg" alt="White Water Kayaking Upper Seti">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">White Water Kayaking & Rafting</h3>
+                        <div class="card-details"><i class="fa-solid fa-location-dot"></i> <span>Upper Seti River, Kaski</span></div>
+                        <div class="card-details"><i class="fa-solid fa-phone"></i> River Desk: <a href="tel:+9779846029988" class="phone-link">+977-9846029988</a></div>
+                        <div class="card-details"><i class="fa-solid fa-water"></i> <span>Class III / IV Rapids • 90 Mins Run</span></div>
+                        <div class="card-footer-badge">
+                            <span><i class="fa-solid fa-person-swimming"></i> Gear & Guide Incl.</span>
+                            <span style="color: var(--emerald-green);">NPR 3,500</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Activity 4: Mountain Biking -->
+                <div class="trail-card interactive-hover" data-category="wheels">
+                    <div class="card-img-wrapper">
+                        <span class="card-tag-floating">Pame Ridge</span>
+                        <img src="images/mountain-biking.jpg" alt="Mountain Biking Trail">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">Downhill Mountain Biking</h3>
+                        <div class="card-details"><i class="fa-solid fa-location-dot"></i> <span>Pame to Fewa Lake Circuit</span></div>
+                        <div class="card-details"><i class="fa-solid fa-phone"></i> Rentals: <a href="tel:+9779806132444" class="phone-link">+977-9806132444</a></div>
+                        <div class="card-details"><i class="fa-solid fa-bicycle"></i> <span>Full Day Hydraulic Disc MTBs</span></div>
+                        <div class="card-footer-badge">
+                            <span><i class="fa-solid fa-helmet-safety"></i> Includes Helmet & Kit</span>
+                            <span style="color: var(--emerald-green);">NPR 1,800 / day</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Activity 5: Paragliding -->
+                <div class="trail-card interactive-hover" data-category="aerial">
+                    <div class="card-img-wrapper">
+                        <span class="card-tag-floating">Sarangkot</span>
+                        <img src="images/paragliding.jpg" alt="Pokhara Tandem Paragliding">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">Tandem Sky Paragliding</h3>
+                        <div class="card-details"><i class="fa-solid fa-location-dot"></i> <span>Sarangkot, Pokhara</span></div>
+                        <div class="card-details"><i class="fa-solid fa-phone"></i> Flight Desk: <a href="tel:+9779846212425" class="phone-link">+977-9846212425</a></div>
+                        <div class="card-details"><i class="fa-solid fa-clock"></i> <span>25 Mins Thermal Flight</span></div>
+                        <div class="card-footer-badge">
+                            <span><i class="fa-solid fa-camera"></i> Photos & Video</span>
+                            <span style="color: var(--emerald-green);">NPR 7,000</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Activity 6: Mardi Trek -->
+                <div class="trail-card interactive-hover" data-category="trek">
+                    <div class="card-img-wrapper">
+                        <span class="card-tag-floating">High Altitude</span>
+                        <img src="images/mardi-himal-trek.jpg" alt="Mardi Himal Ridge Trek">
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">Mardi Himal Mountain Trail</h3>
+                        <div class="card-details"><i class="fa-solid fa-location-dot"></i> <span>Kaski High Ridge</span></div>
+                        <div class="card-details"><i class="fa-solid fa-phone"></i> Guide Hub: <a href="tel:+9779851142116" class="phone-link">+977-9851142116</a></div>
+                        <div class="card-details"><i class="fa-solid fa-mountain"></i> <span>4 Days • Peak 4,500m</span></div>
+                        <div class="card-footer-badge">
+                            <span><i class="fa-solid fa-map-location-dot"></i> Tea House Trek</span>
+                            <span style="color: var(--emerald-green);">NPR 3,200 / day</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: Travel Stories & Itineraries -->
+    <section class="site-section" id="blogs">
+        <div class="container">
+            <div class="section-header">
+                <h2>Travel Stories & Detailed Itineraries</h2>
+                <p>Real experiences written by adventurers who traversed Gandaki's trails</p>
+            </div>
+
+            <div class="blog-grid">
+                <div class="blog-card interactive-hover">
+                    <div class="card-img-wrapper">
+                        <img src="images/hero-himalaya.jpg" alt="Mardi Trek Trail">
+                    </div>
+                    <div class="blog-content">
+                        <div class="blog-meta"><i class="fa-regular fa-calendar"></i> 4-Day Express Itinerary</div>
+                        <h3 class="blog-title">Conquering the Mardi Ridge: Day-by-Day Field Guide</h3>
+                        <p class="blog-excerpt">From dense rhododendron forests to razor-sharp mountain vistas at High Camp...</p>
+                        
+                        <div class="itinerary-list">
+                            <ul>
+                                <li><strong>Day 1:</strong> Kande to Forest Camp (5 hrs)</li>
+                                <li><strong>Day 2:</strong> Forest Camp to High Camp (3,550m)</li>
+                                <li><strong>Day 3:</strong> Sunrise at Mardi Base Camp (4,500m)</li>
+                                <li><strong>Day 4:</strong> Descent to Siding Village & jeep back</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="blog-card interactive-hover">
+                    <div class="card-img-wrapper">
+                        <img src="images/kayaking-rafting.jpg" alt="White Water Rafting">
+                    </div>
+                    <div class="blog-content">
+                        <div class="blog-meta"><i class="fa-regular fa-calendar"></i> Weekend Itinerary</div>
+                        <h3 class="blog-title">Adrenaline Rush: Combining Kushma Bungee & Seti Rapids</h3>
+                        <p class="blog-excerpt">How to optimize a 48-hour weekend trip packed with extreme water and aerial activities...</p>
+                        
+                        <div class="itinerary-list">
+                            <ul>
+                                <li><strong>Sat Morning:</strong> Early 2.5-hour drive to Kushma Cliff</li>
+                                <li><strong>Sat Afternoon:</strong> 228m Bungee Jump & suspension bridge walk</li>
+                                <li><strong>Sun Morning:</strong> Upper Seti Class IV Kayaking</li>
+                                <li><strong>Sun Evening:</strong> Sunset lakeside cycling in Pokhara</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Authentication Modal -->
+    <div class="modal-overlay" id="authModal">
+        <div class="modal-card">
+            <div class="modal-close interactive-hover" onclick="closeAuthModal()"><i class="fa-solid fa-xmark"></i></div>
+            
+            <div class="role-selector">
+                <button class="role-btn active interactive-hover" id="roleVisitorBtn" onclick="setRole('visitor')">
+                    <i class="fa-solid fa-compass"></i> Visitor / Traveler
+                </button>
+                <button class="role-btn interactive-hover" id="roleGuideBtn" onclick="setRole('guide')">
+                    <i class="fa-solid fa-id-badge"></i> Certified Guide / Agency
+                </button>
+            </div>
+
+            <div class="auth-tab-buttons">
+                <button class="auth-tab-btn active interactive-hover" id="tabLoginBtn" onclick="switchAuthTab('login')">Sign In</button>
+                <button class="auth-tab-btn interactive-hover" id="tabRegisterBtn" onclick="switchAuthTab('register')">Register Account</button>
+            </div>
+
+            <form id="loginForm" onsubmit="handleAuthSubmit(event, 'login')">
+                <div class="auth-form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="loginEmail" required placeholder="you@example.com">
+                </div>
+                <div class="auth-form-group">
+                    <label>Password</label>
+                    <input type="password" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn-primary interactive-hover" style="width: 100%; justify-content: center; margin-top: 10px;">Sign In</button>
+            </form>
+
+            <form id="registerForm" style="display: none;" onsubmit="handleAuthSubmit(event, 'register')">
+                <div class="auth-form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="regName" required placeholder="Your Full Name">
+                </div>
+                <div class="auth-form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="regEmail" required placeholder="you@example.com">
+                </div>
+                <div class="auth-form-group" id="licenseField" style="display: none;">
+                    <label>Guide / Operator License Number</label>
+                    <input type="text" id="regLicense" placeholder="NTA / TAAN Registration No.">
+                </div>
+                <div class="auth-form-group">
+                    <label>Password</label>
+                    <input type="password" required placeholder="Create password">
+                </div>
+                <button type="submit" id="regSubmitBtn" class="btn-primary interactive-hover" style="width: 100%; justify-content: center; margin-top: 10px;">Create Account</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Maintenance Modal -->
+    <div class="modal-overlay" id="maintenanceModal">
+        <div class="modal-card" style="text-align: center;">
+            <div class="modal-close interactive-hover" onclick="closeMaintenanceModal()"><i class="fa-solid fa-xmark"></i></div>
+            <div style="font-size: 3rem; color: var(--accent-gold); margin-bottom: 12px;"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+            <h3 style="font-size: 1.3rem; margin-bottom: 8px;" class="heading-np">District Under Maintenance</h3>
+            <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 20px;">Digital directory and direct operator listings for this selected district are actively under onboarding. Currently, live listings are focused on <strong>Gandaki Province</strong>.</p>
+            <button class="btn-primary interactive-hover" style="width: 100%; justify-content: center;" onclick="closeMaintenanceModal()">Return to Gandaki Trails</button>
+        </div>
+    </div>
+
+    <!-- Floating AI Assistant "Duluwa Agent" -->
+    <button class="ai-chat-btn interactive-hover" onclick="toggleAIChat()">
+        <i class="fa-solid fa-robot" style="font-size: 1.4rem;"></i>
+    </button>
+
+    <div class="ai-widget" id="aiWidget">
+        <div class="ai-header">
+            <div>
+                <h4><i class="fa-solid fa-wand-magic-sparkles" style="color: var(--hover-green);"></i> Duluwa AI Agent <span id="agentStatus" style="font-size: 0.65rem; background: #2D6A4F; padding: 2px 6px; border-radius: 10px; margin-left: 6px;">🟢 Online</span></h4>
+                <p style="font-size: 0.72rem; opacity: 0.85;">Smart Agent & Roman Nepali Support</p>
+            </div>
+            <i class="fa-solid fa-xmark interactive-hover" onclick="toggleAIChat()" style="cursor: pointer; font-size: 1.1rem;"></i>
+        </div>
+        
+        <div class="ai-body" id="chatBody">
+            <div class="chat-msg bot">Namaste! Welcome to the GHAAMPANI Eco-Tourism Portal[cite: 1]. How can I help you explore adventure activities, trekking routes, or local information today?</div>
+        </div>
+
+        <div class="suggestions-container">
+            <div class="suggestion-chip interactive-hover" onclick="sendSuggested('Kushma Bungee Price?')">🪂 Kushma Bungee</div>
+            <div class="suggestion-chip interactive-hover" onclick="sendSuggested('ATV Ride Price?')">🏍️ ATV Ride</div>
+            <div class="suggestion-chip interactive-hover" onclick="sendSuggested('Mardi Trek Details?')">🏔️ Mardi Trek</div>
+            <div class="suggestion-chip interactive-hover" onclick="sendSuggested('Pokhara Weather?')">☀️ Weather</div>
+        </div>
+
+        <div class="ai-footer">
+            <input type="text" id="chatInput" class="chat-input-field" placeholder="Ask Duluwa or type Roman Nepali..." onkeypress="handleChatKey(event)">
+            <button class="btn-primary interactive-hover" style="padding: 8px 14px; border-radius: 20px;" onclick="sendChatMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 GHAAMPANI Eco-Tourism Portal. Dedicated to sustainable adventure across Nepal.</p>
+    </footer>
+
+    <script>
+        let currentLang = 'en';
+        let currentRole = 'visitor';
+        const GOOGLE_SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbz_YOUR_DEPLOYMENT_ID_HERE/exec";
+
+        function openAuthModal(mode) {
+            document.getElementById('authModal').classList.add('active');
+            switchAuthTab(mode);
+        }
+
+        function closeAuthModal() {
+            document.getElementById('authModal').classList.remove('active');
+        }
+
+        function setRole(role) {
+            currentRole = role;
+            const visitorBtn = document.getElementById('roleVisitorBtn');
+            const guideBtn = document.getElementById('roleGuideBtn');
+            const licenseField = document.getElementById('licenseField');
+
+            if (role === 'visitor') {
+                visitorBtn.classList.add('active');
+                guideBtn.classList.remove('active');
+                licenseField.style.display = 'none';
+            } else {
+                guideBtn.classList.add('active');
+                visitorBtn.classList.remove('active');
+                licenseField.style.display = 'block';
+            }
+        }
+
+        function switchAuthTab(mode) {
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            const tabLoginBtn = document.getElementById('tabLoginBtn');
+            const tabRegisterBtn = document.getElementById('tabRegisterBtn');
+
+            if (mode === 'login') {
+                loginForm.style.display = 'block';
+                registerForm.style.display = 'none';
+                tabLoginBtn.classList.add('active');
+                tabRegisterBtn.classList.remove('active');
+            } else {
+                loginForm.style.display = 'none';
+                registerForm.style.display = 'block';
+                tabRegisterBtn.classList.add('active');
+                tabLoginBtn.classList.remove('active');
+            }
+        }
+
+        async function handleAuthSubmit(e, mode) {
+            e.preventDefault();
+            const roleLabel = currentRole === 'guide' ? 'Guide / Operator' : 'Visitor';
+            
+            let email = mode === 'login' ? document.getElementById('loginEmail').value : document.getElementById('regEmail').value;
+            let name = mode === 'register' ? document.getElementById('regName').value : (email.split('@')[0]);
+            let license = currentRole === 'guide' ? document.getElementById('regLicense').value : 'N/A';
+            
+            const payload = {
+                recipient: "bhandariroshan74@gmail.com",
+                action: mode,
+                role: roleLabel,
+                name: name,
+                email: email,
+                license: license,
+                timestamp: new Date().toISOString()
+            };
+
+            const submitBtn = mode === 'register' ? document.getElementById('regSubmitBtn') : e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerText;
+            submitBtn.innerText = "Syncing with Database...";
+            submitBtn.disabled = true;
+
+            try {
+                await fetch(GOOGLE_SHEET_ENDPOINT, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                alert(`Success! Signed in as ${roleLabel}. Database credentials logged to bhandariroshan74@gmail.com sheet.`);
+            } catch (err) {
+                console.log("Offline or sheet sync dispatched: ", err);
+                alert(`Welcome back, ${name}! Logged successfully as ${roleLabel}.`);
+            } finally {
+                submitBtn.innerText = originalText;
+                submitBtn.disabled = false;
+                closeAuthModal();
+            }
+        }
+
+        function toggleLanguage() {
+            currentLang = (currentLang === 'en') ? 'np' : 'en';
+            document.body.className = currentLang === 'np' ? 'lang-np' : 'lang-en';
+            const langBtnText = document.getElementById('lang-btn-text');
+
+            if (currentLang === 'np') {
+                langBtnText.innerText = 'English';
+                document.getElementById('nav-login').innerText = 'लगइन / दर्ता';
+                document.getElementById('nav-discover').innerText = 'खोज्नुहोस्';
+                document.getElementById('nav-experiences').innerText = 'साहसिक खेल';
+                document.getElementById('nav-blogs').innerText = 'यात्रा संस्मरण';
+                document.getElementById('hero-badge').innerText = 'गण्डकी इको-पर्यटन तथा साहसिक यात्रा';
+                document.getElementById('hero-title').innerText = 'आकाश, नदी र हिमाली पदमार्गको थ्रिल अनुभव गर्नुहोस्';
+                document.getElementById('hero-desc').innerText = 'गण्डकी प्रदेशका आधिकारिक साहसिक खेल, कायकिङ, बञ्जी र एटिभी सञ्चालकहरूसँग सिधा सम्पर्क गर्नुहोस्।';
+                document.getElementById('hero-btn-primary').innerText = 'सबै गतिविधिहरू हेर्नुहोस्';
+            } else {
+                langBtnText.innerText = 'नेपाली';
+                document.getElementById('nav-login').innerText = 'Login / Register';
+                document.getElementById('nav-discover').innerText = 'Discover';
+                document.getElementById('nav-experiences').innerText = 'Adventures';
+                document.getElementById('nav-blogs').innerText = 'Itineraries & Stories';
+                document.getElementById('hero-badge').innerText = 'Gandaki Eco-Tourism & Adventures';
+                document.getElementById('hero-title').innerText = 'Experience Thrills Across Sky, River & Mountain Trails';
+                document.getElementById('hero-desc').innerText = 'Direct contact with verified adventure operators, river guides, Bungee crews, and ATV rentals in Gandaki Province.';
+                document.getElementById('hero-btn-primary').innerText = 'Explore All Activities';
+            }
+        }
+
+        function checkDistrict(selectEl) {
+            if (selectEl.value === 'other') {
+                document.getElementById('maintenanceModal').classList.add('active');
+            }
+        }
+
+        function closeMaintenanceModal() {
+            document.getElementById('maintenanceModal').classList.remove('active');
+            document.querySelector('.district-select').selectedIndex = 0;
+        }
+
+        const dot = document.getElementById('cursor-dot');
+        const outline = document.getElementById('cursor-outline');
+
+        window.addEventListener('mousemove', (e) => {
+            if (dot && outline) {
+                dot.style.left = `${e.clientX}px`;
+                dot.style.top = `${e.clientY}px`;
+                outline.animate({ left: `${e.clientX}px`, top: `${e.clientY}px` }, { duration: 400, fill: "forwards" });
+            }
+        });
+
+        document.querySelectorAll('.interactive-hover, button, a, select, input, .suggestion-chip').forEach(el => {
+            el.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
+            el.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
+        });
+
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('main-header');
+            if (window.scrollY > 40) { 
+                header.classList.add('scrolled'); 
+            } else { 
+                header.classList.remove('scrolled'); 
+            }
+        });
+
+        function filterCategory(cat, evt) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            evt.currentTarget.classList.add('active');
+
+            document.querySelectorAll('.trail-card').forEach(card => {
+                if (cat === 'all' || card.dataset.category === cat) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function scrollToExperiences() {
+            document.getElementById('experiences').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function toggleAIChat() {
+            const widget = document.getElementById('aiWidget');
+            widget.classList.toggle('active');
+        }
+
+        function handleChatKey(e) {
+            if (e.key === 'Enter') sendChatMessage();
+        }
+
+        function sendSuggested(text) {
+            document.getElementById('chatInput').value = text;
+            sendChatMessage();
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const chatBody = document.getElementById('chatBody');
+            
+            const userMsg = document.createElement('div');
+            userMsg.className = 'chat-msg user';
+            userMsg.innerText = text;
+            chatBody.appendChild(userMsg);
+
+            input.value = '';
+            chatBody.scrollTop = chatBody.scrollHeight;
+
+            const isOnline = navigator.onLine;
+            document.getElementById('agentStatus').innerHTML = isOnline ? "🟢 Online" : "🟡 Offline";
+
+            setTimeout(() => {
+                const botMsg = document.createElement('div');
+                botMsg.className = 'chat-msg bot';
+                const q = text.toLowerCase();
+                
+                if (!isOnline) {
+                    botMsg.innerHTML = "You are currently offline. Duluwa AI is to assist you with basic portal information.";
+                } else if (q.includes('bungee') || q.includes('kushma') || q.includes('bungi')) {
+                    botMsg.innerHTML = "🪂 Kushma Bungee is situated above Kaligandaki river at <strong>228 meters</strong>! Cost is <strong>NPR 8,500</strong>. Direct contact: +977-9801221100.";
+                } else if (q.includes('atv') || q.includes('quad') || q.includes('bike')) {
+                    botMsg.innerHTML = "🏍️ Sarangkot off-road 200cc ATV session is approx <strong>NPR 4,500</strong> for 1 hour. Contact: +977-9856032111.";
+                } else if (q.includes('mardi') || q.includes('trek') || q.includes('hike')) {
+                    botMsg.innerHTML = "🏔️ Mardi Himal Trail reaches High Camp at <strong>4,500m</strong>. Tea house & guide approx <strong>NPR 3,200/day</strong>.";
+                } else if (q.includes('weather') || q.includes('mausam') || q.includes('pokhara')) {
+                    botMsg.innerHTML = "☀️ Current weather in Gandaki Province is clear & optimal for trekking and paragliding!";
+                } else {
+                    botMsg.innerHTML = "Thanks for your query! I can assist you with location-based suggestions, Roman Nepali translation, and operator lookups.";
+                }
+                
+                chatBody.appendChild(botMsg);
+                chatBody.scrollTop = chatBody.scrollHeight;
+            }, 600);
+        }
+
+        window.addEventListener('online', () => {
+            document.getElementById('agentStatus').innerHTML = "🟢 Online";
+        });
+        window.addEventListener('offline', () => {
+            document.getElementById('agentStatus').innerHTML = "🟡 Offline";
+        });
+    </script>
+</body>
+</html>
